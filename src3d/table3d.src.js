@@ -444,7 +444,7 @@ function resize() {
   camera.aspect = w / h; camera.updateProjectionMatrix();
   const a = w / h;
   const tanHalf = Math.tan((camera.fov * Math.PI) / 360);
-  fitDist = Math.max(14.5, (a < 1 ? 12 : 10.4) / (tanHalf * a), (8.8 / tanHalf) * 0.72);
+  fitDist = Math.max(11, (a < 1 ? 12 : 10.4) / (tanHalf * a), (8.8 / tanHalf) * 0.71);
   if (!camTween && !controls.userDragged) { const p = homePos(); camera.position.copy(p); controls.target.set(0, 0, 0.4); }
 }
 
