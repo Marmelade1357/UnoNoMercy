@@ -1,0 +1,16 @@
+name: uno
+
+services:
+  app:
+    build: .
+    environment:
+      - TZ=Europe/Berlin
+    ports:
+      # Nur intern auf dem Pi erreichbar (127.0.0.1:8100) - ein bereits laufender
+      # Reverse Proxy auf dem Pi kann eine Subdomain (z.B. uno.oualid.de) hierher
+      # routen, analog zu poker.oualid.de -> 8097. Port 8100 gewählt, weil
+      # 8080/8081/8090-8099 schon von anderen Projekten (FinanceAgent, Monitoring
+      # Shop, Widerstand, Wizard, Spielehub, Bluff, Tempel, Poker, Munchkin,
+      # Monopoly) belegt sind.
+      - "127.0.0.1:8100:3000"
+    restart: unless-stopped

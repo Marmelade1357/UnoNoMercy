@@ -1,0 +1,24 @@
+{
+  "name": "uno-no-mercy-online",
+  "version": "1.0.0",
+  "description": "Uno No Mercy online spielen - mit Freunden im Browser, mit Ziehkarten-Stapeln, 7-0-Regel, Mercy-Regel, Bots und 3D-Tisch.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tests/run.js",
+    "build3d": "esbuild src3d/table3d.src.js --bundle --minify --format=esm --outfile=public/table3d.js"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "socket.io-client": "^4.7.5",
+    "three": "^0.186.0"
+  }
+}

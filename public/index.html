@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Uno No Mercy – Online</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E" />
+<meta name="theme-color" content="#140a0d" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Uno" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="toast" class="toast hidden"></div>
+
+<!-- ============ START ============ -->
+<section id="screen-home" class="screen">
+  <div class="card home-card">
+    <h1>🔥 Uno No Mercy</h1>
+    <p class="subtitle">Ziehkarten stapeln, Hände tauschen – wer 25 Karten hat, fliegt raus.</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="create">Tisch erstellen</button>
+      <button class="tab-btn" data-tab="join">Tisch beitreten</button>
+    </div>
+
+    <div id="tab-create" class="tab-panel">
+      <label>Dein Name</label>
+      <input id="create-name" maxlength="20" placeholder="z. B. Oualid" />
+      <button id="btn-create" class="btn primary">Neuen Tisch erstellen</button>
+    </div>
+
+    <div id="tab-join" class="tab-panel hidden">
+      <label>Dein Name</label>
+      <input id="join-name" maxlength="20" placeholder="z. B. Alex" />
+      <label>Raum-Code</label>
+      <input id="join-code" maxlength="4" placeholder="z. B. AB12" style="text-transform:uppercase" />
+      <button id="btn-join" class="btn primary">Beitreten</button>
+    </div>
+
+    <p class="hint">2–10 Spieler · Ein Gerät pro Person (Handy, Tablet oder PC)</p>
+  </div>
+
+  <a id="btn-back-hub-home" class="btn ghost small hidden back-hub-home" href="/">← Spielauswahl</a>
+</section>
+
+<!-- ============ LOBBY ============ -->
+<section id="screen-lobby" class="screen hidden">
+  <div class="card">
+    <div class="lobby-header">
+      <div>
+        <div class="eyebrow">Raum-Code – an Freunde weitergeben</div>
+        <div id="lobby-code" class="room-code">----</div>
+        <button id="btn-share-link" class="btn secondary small" type="button">🔗 Einladungslink kopieren</button>
+      </div>
+      <button id="btn-leave-lobby" class="btn ghost small">Verlassen</button>
+    </div>
+
+    <h3>Spieler (<span id="lobby-count">0</span>/10)</h3>
+    <ul id="lobby-players" class="player-list"></ul>
+
+    <div id="lobby-bot-controls" class="bot-controls hidden">
+      <button id="btn-fill-bots" class="btn secondary small hidden">🤖 Mit Bots auf 2 auffüllen</button>
+      <button id="btn-add-bot" class="btn ghost small">+ Bot hinzufügen</button>
+    </div>
+    <p class="hint">Weniger Freunde da? Füge Bots hinzu – sie spielen automatisch mit.</p>
+
+    <div id="lobby-settings" class="lobby-settings hidden">
+      <label class="check-label"><input type="checkbox" id="set-sevenzero" checked> 7-0-Regel (7 tauscht Hände, 0 reicht alle weiter)</label>
+      <label class="check-label"><input type="checkbox" id="set-uno" checked> „UNO!“ rufen ist Pflicht (Strafe: +2)</label>
+      <label for="set-target">Spielende</label>
+      <select id="set-target">
+        <option value="0">Eine Runde</option>
+        <option value="250">Bis 250 Punkte</option>
+        <option value="500">Bis 500 Punkte</option>
+        <option value="1000">Bis 1000 Punkte</option>
+      </select>
+    </div>
+    <p id="lobby-settings-display" class="hint hidden"></p>
+
+    <p id="lobby-status" class="hint"></p>
+    <button id="btn-start" class="btn primary hidden">Spiel starten</button>
+    <button id="btn-show-rules-lobby" class="btn ghost small rules-btn" type="button">📜 Regeln ansehen</button>
+  </div>
+</section>
+
+<!-- ============ SPIEL ============ -->
+<section id="screen-game" class="screen hidden">
+  <header class="game-header">
+    <div class="game-header-top">
+      <div class="game-header-left">
+        <span class="room-code small" id="game-code"></span>
+        <span id="round-badge" class="round-badge"></span>
+      </div>
+      <div class="game-header-right">
+        <button id="btn-toggle-sound" class="btn ghost small" title="Ton an/aus">🔊</button>
+        <button id="btn-view3d" class="btn ghost small" type="button" title="2D / 3D umschalten">🧊<span class="lbl"> 3D</span></button>
+        <button id="btn-show-log" class="btn ghost small">🗒️<span class="lbl"> Verlauf</span></button>
+        <button id="btn-show-rules" class="btn ghost small" type="button">📜<span class="lbl"> Regeln</span></button>
+        <button id="btn-leave-game" class="btn ghost small">Verlassen</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="game-body">
+    <div id="table-wrap" class="table-wrap">
+      <div id="table-felt" class="table-felt">
+        <div id="table-center" class="table-center">
+          <div class="pile-slot">
+            <button id="draw-pile" class="draw-pile" type="button" title="Karte ziehen"><span class="ucard back"><span class="back-logo">NO<br>MERCY</span></span><span id="draw-count" class="pile-count"></span></button>
+            <div class="pile-label">Stapel</div>
+          </div>
+          <div class="pile-slot">
+            <div id="discard-pile" class="discard-pile"></div>
+            <div class="pile-label"><span id="color-dot" class="color-dot"></span> <span id="dir-arrow" class="dir-arrow">↻</span></div>
+          </div>
+          <div id="pending-badge" class="pending-badge hidden"></div>
+        </div>
+        <div id="table-note" class="waiting-note"></div>
+      </div>
+      <div id="seats" class="seats"></div>
+      <div id="canvas-host" class="canvas-host hidden"></div>
+      <div id="view3d-tools" class="view3d-tools hidden">
+        <button id="btn-top3d" class="reset3d" type="button" title="Draufsicht">⬆️ Von oben</button>
+        <button id="btn-reset3d" class="reset3d" type="button" title="Ansicht zurücksetzen">🎯 Ansicht</button>
+      </div>
+      <div id="uno-alert" class="uno-alert hidden"></div>
+    </div>
+  </div>
+
+  <!-- Hand unten, wie bei den anderen Spielen -->
+  <div id="hand-bar" class="hand-bar hidden">
+    <div class="hand-bar-top">
+      <div class="hand-bar-label"><span id="turn-label">Deine Karten</span></div>
+      <label class="auto-sort-toggle" title="Karten nach Farbe sortieren">
+        <input type="checkbox" id="toggle-sort" checked>
+        <span class="toggle-switch"></span>
+        <span class="toggle-label-text">Sortieren</span>
+      </label>
+    </div>
+    <div id="action-buttons" class="action-buttons"></div>
+    <ul id="hand-list" class="hand-list"></ul>
+  </div>
+</section>
+
+<!-- ============ MODALS ============ -->
+<div id="color-modal" class="modal hidden">
+  <div class="modal-content small-modal">
+    <h2>Farbe wählen</h2>
+    <div class="color-choices">
+      <button class="color-choice c-red" data-color="red">Rot</button>
+      <button class="color-choice c-yellow" data-color="yellow">Gelb</button>
+      <button class="color-choice c-green" data-color="green">Grün</button>
+      <button class="color-choice c-blue" data-color="blue">Blau</button>
+    </div>
+    <button id="btn-cancel-choice" class="btn ghost small">Abbrechen</button>
+  </div>
+</div>
+
+<div id="target-modal" class="modal hidden">
+  <div class="modal-content small-modal">
+    <h2>Mit wem tauschst du die Hand?</h2>
+    <div id="target-list" class="target-list"></div>
+    <button id="btn-cancel-target" class="btn ghost small">Abbrechen</button>
+  </div>
+</div>
+
+<div id="result-modal" class="modal hidden">
+  <div class="modal-content result-content">
+    <div id="result-body"></div>
+  </div>
+</div>
+
+<div id="log-modal" class="modal hidden">
+  <div class="modal-content log-modal-content">
+    <button id="btn-close-log-modal" class="btn ghost small modal-close">✕</button>
+    <h2>🗒️ Verlauf</h2>
+    <ul id="log-list" class="log-list"></ul>
+  </div>
+</div>
+
+<div id="rules-modal" class="modal hidden">
+  <div class="modal-content rules-modal-content">
+    <button id="btn-close-rules-modal" class="btn ghost small modal-close">✕</button>
+    <h2>📜 Regeln – Uno No Mercy</h2>
+    <div class="rules-text">
+      <h3>Ziel</h3>
+      <p>Werde als Erste:r alle Karten los – oder bleibe als Letzte:r übrig. Wer 25 oder mehr Karten auf der Hand hat, scheidet sofort aus (<b>Mercy-Regel</b>); seine Karten wandern zurück in den Stapel.</p>
+      <h3>Ablauf</h3>
+      <p>Alle starten mit 7 Karten. Du darfst eine Karte legen, die in <b>Farbe, Zahl oder Symbol</b> zur obersten Karte passt; Joker gehen immer. Hast du nichts Passendes, ziehst du <b>so lange, bis eine Karte passt</b> – die darfst du dann spielen (oder passen).</p>
+      <h3>Ziehkarten stapeln</h3>
+      <p>Auf +2, +4, Wild +4, Wild +6 und Wild +10 darf die nächste Person mit einer <b>gleich hohen oder höheren</b> Ziehkarte antworten (Farbe egal) – die Strafe wächst dabei. Wer nicht kontern kann oder will, zieht die gesamte Summe und setzt aus.</p>
+      <h3>Aktionskarten</h3>
+      <p><b>Aussetzen</b>: die nächste Person setzt aus. <b>Richtungswechsel</b>: die Spielrichtung dreht um (zu zweit wie Aussetzen). <b>Alle aussetzen</b>: alle anderen setzen aus, du bist gleich nochmal dran. <b>Alle ablegen</b>: du legst zusätzlich alle Karten dieser Farbe aus deiner Hand ab.</p>
+      <h3>Joker</h3>
+      <p><b>Wilder Richtungswechsel +4</b>: Richtung wechselt, nächste Person zieht 4. <b>Wild +6 / +10</b>: nächste Person zieht 6 bzw. 10. <b>Farbroulette</b>: du wählst eine Farbe, die nächste Person zieht so lange, bis sie diese Farbe erwischt, und setzt aus. Bei allen Jokern wählst du die neue Farbe.</p>
+      <h3>7 und 0 (optional)</h3>
+      <p><b>7</b>: tausche deine Hand mit einer Person deiner Wahl. <b>0</b>: alle reichen ihre Hand in Spielrichtung weiter.</p>
+      <h3>UNO!</h3>
+      <p>Bleibt dir nach dem Legen eine Karte, musst du „UNO!“ gerufen haben (Knopf vor dem Legen antippen, oder direkt danach). Wird es bemerkt und du hast es vergessen, kann dich jede andere Person erwischen: +2 Karten.</p>
+      <h3>Punkte</h3>
+      <p>Wer gewinnt, bekommt die Kartenwerte der anderen: Zahlen = Nennwert, Farbaktionen 20, Joker 50; pro ausgeschiedener Person 250. Der Host legt fest, ob es eine einzelne Runde ist oder bis 250 / 500 / 1000 Punkte gespielt wird.</p>
+      <h3>Wartezeit</h3>
+      <p>Wer lange braucht, wird nicht automatisch bewegt – die Host-Person kann nach einer Weile „Überspringen“ wählen.</p>
+    </div>
+  </div>
+</div>
+
+<script src="socket.io/socket.io.js"></script>
+<script src="client.js"></script>
+</body>
+</html>

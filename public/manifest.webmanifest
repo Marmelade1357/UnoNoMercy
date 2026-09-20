@@ -1,0 +1,17 @@
+{
+  "name": "Uno No Mercy",
+  "short_name": "Uno",
+  "description": "Uno No Mercy – online mit Freunden spielen",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#140a0d",
+  "theme_color": "#140a0d",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
