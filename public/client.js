@@ -318,6 +318,7 @@
     $('round-badge').textContent = `Runde ${state.roundNo}${tgt ? ` · bis ${tgt} Punkte` : ''}`;
     renderTable(state);
     renderSeats(state);
+    renderScores(state);
     renderHand();
     renderActions(state);
     notifyTurn(state);
@@ -459,6 +460,32 @@
       if (b && b.until > now) seat.appendChild(el('div', { class: 'seat-action', text: b.text }));
       wrap.appendChild(seat);
     });
+  }
+
+  // ----- Punkte-Rangliste (rechts, nur wenn bis zu einem Punktziel gespielt wird) -----
+  function renderScores(state) {
+    const panel = $('score-panel');
+    const target = state.settings.target;
+    if (!target) { hide(panel); return; }
+    show(panel);
+    const list = $('score-list'); list.innerHTML = '';
+    const rows = state.players.slice().sort((a, b) => b.score - a.score);
+    const best = rows.length ? rows[0].score : 0;
+    rows.forEach((p, i) => {
+      const cls = ['score-row'];
+      if (i === 0 && best > 0) cls.push('first');
+      if (p.id === myId()) cls.push('me');
+      if (state.currentTurnId === p.id) cls.push('turn');
+      if (p.eliminated) cls.push('out');
+      const pct = Math.min(100, Math.round((p.score / target) * 100));
+      list.appendChild(el('li', { class: cls.join(' ') }, [
+        el('span', { class: 'rank', text: String(i + 1) }),
+        el('span', { class: 'nm', text: p.name, title: p.name }),
+        el('span', { class: 'pts', text: String(p.score) }),
+        el('span', { class: 'bar' }, [el('i', { style: `width:${pct}%` })]),
+      ]));
+    });
+    $('score-goal').textContent = `Ziel: ${target} Punkte · Runde ${state.roundNo}`;
   }
 
   // ----- Hand (unten) -----

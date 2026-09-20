@@ -14,6 +14,7 @@
   --success: #3ecf8e;
   --radius: 14px;
   --hand-bar-height: 250px;
+  --header-h: 53px;
   --cw: 92px;
 
   --c-red: #e63946;
@@ -131,17 +132,17 @@ input[type="checkbox"] { width: auto; }
 .game-header-left, .game-header-right { display: flex; align-items: center; gap: 8px; }
 .round-badge { font-weight: 700; color: var(--gold-bright); font-size: 0.9rem; }
 
-.game-body { padding: 14px 16px calc(var(--hand-bar-height) + 12px); max-width: 1000px; margin: 0 auto; }
-
-/* Runder Tisch wie bei Poker: .table-wrap gibt die Größe vor, .table-felt ist die Filzfläche,
-   .seats positioniert die Sitze auf einer Ellipse. */
-.table-wrap {
-  position: relative; width: 100%; aspect-ratio: 4 / 3;
-  max-height: calc(100vh - 64px - var(--hand-bar-height) - 24px);
-  min-height: 300px; margin: 0 auto;
+.game-body {
+  display: flex; gap: 12px; align-items: stretch;
+  height: calc(100vh - var(--header-h));
+  padding: 8px 12px calc(var(--hand-bar-height) + 8px);
 }
+
+/* Der Tisch füllt die gesamte Fläche zwischen Kopfzeile und Handleiste. .table-felt ist die
+   Filzfläche, .seats positioniert die Sitze in %-Koordinaten auf einer Ellipse. */
+.table-wrap { position: relative; flex: 1 1 auto; min-width: 0; min-height: 260px; }
 .table-felt {
-  position: absolute; inset: 17% 17%;
+  position: absolute; inset: 15% 12%;
   display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center;
   padding: 10px; border-radius: 50%;
   background: radial-gradient(ellipse at center, #5a2230 0%, #3a1520 68%, #240d14 100%);
@@ -151,14 +152,14 @@ input[type="checkbox"] { width: auto; }
 .table-center { display: flex; gap: 22px; align-items: center; justify-content: center; position: relative; }
 .pile-slot { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .pile-label { font-size: 0.72rem; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
-.draw-pile { position: relative; background: none; border: 0; padding: 0; cursor: default; --cw: 64px; }
+.draw-pile { position: relative; background: none; border: 0; padding: 0; cursor: default; --cw: clamp(64px, 6.4vw, 118px); }
 .draw-pile.can-draw { cursor: pointer; animation: pulse-glow 1.2s ease-in-out infinite; border-radius: 8px; }
 .pile-count {
   position: absolute; right: -8px; bottom: -8px; background: var(--bg); border: 1px solid var(--border);
   font-size: 0.68rem; padding: 1px 6px; border-radius: 10px; color: var(--text);
 }
 @keyframes pulse-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(255,221,136,0.0); } 50% { box-shadow: 0 0 14px 4px rgba(255,221,136,0.85); } }
-.discard-pile { --cw: 72px; position: relative; }
+.discard-pile { --cw: clamp(72px, 7.2vw, 132px); position: relative; }
 .discard-pile .ucard { box-shadow: 0 0 0 4px var(--ring, transparent), 0 6px 16px rgba(0,0,0,0.5); }
 .discard-pile .ucard.flip-in { animation: card-deal-in 0.3s ease-out; }
 .color-dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; border: 2px solid rgba(255,255,255,0.7); background: var(--dot, #888); }
@@ -173,18 +174,18 @@ input[type="checkbox"] { width: auto; }
 
 .seats { position: absolute; inset: 0; pointer-events: none; }
 .seat {
-  position: absolute; transform: translate(-50%, -50%); width: 118px;
+  position: absolute; transform: translate(-50%, -50%); width: clamp(118px, 11vw, 190px);
   display: flex; flex-direction: column; align-items: center; gap: 3px; pointer-events: auto;
 }
 .seat-fan { display: flex; min-height: 34px; justify-content: center; }
-.seat-fan .mini { width: 20px; height: 30px; margin-left: -9px; border-radius: 3px; background: linear-gradient(135deg, #1b1b1f, #3b0f16); border: 1px solid #ffffff55; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+.seat-fan .mini { width: clamp(20px, 1.8vw, 32px); height: clamp(30px, 2.7vw, 48px); margin-left: -9px; border-radius: 3px; background: linear-gradient(135deg, #1b1b1f, #3b0f16); border: 1px solid #ffffff55; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
 .seat-fan .mini:first-child { margin-left: 0; }
 .seat-fan .more { font-size: 0.7rem; color: var(--gold-bright); align-self: center; margin-left: 4px; font-weight: 700; }
 .seat-name-row {
   display: flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px;
-  background: var(--panel); border: 1px solid var(--border); font-size: 0.74rem; font-weight: 600; max-width: 100%;
+  background: var(--panel); border: 1px solid var(--border); font-size: clamp(0.74rem, 0.9vw, 1rem); font-weight: 600; max-width: 100%;
 }
-.seat-name-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 78px; }
+.seat-name-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: clamp(78px, 8vw, 140px); }
 .seat-count { font-size: 0.78rem; font-weight: 800; color: var(--gold-bright); }
 .seat-score { font-size: 0.66rem; color: var(--text-dim); }
 .seat.active-turn .seat-name-row { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(244,201,93,0.55), 0 0 14px rgba(244,201,93,0.5); }
@@ -307,21 +308,39 @@ input[type="checkbox"] { width: auto; }
 /* ---------------- 3D ---------------- */
 .canvas-host { position: absolute; inset: 0; border-radius: 16px; overflow: hidden; }
 .board3d-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; transition: opacity 0.35s ease; }
-.table-wrap.mode3d { aspect-ratio: auto; height: calc(100vh - 64px - var(--hand-bar-height) - 16px); max-height: none; }
 .table-wrap.mode3d .table-felt, .table-wrap.mode3d .seats { display: none; }
-#screen-game.mode3d-ui .game-body { max-width: 1240px; }
 .view3d-tools { position: absolute; right: 8px; top: 8px; display: flex; gap: 6px; z-index: 10; }
 .reset3d { background: rgba(20,10,13,0.75); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 5px 9px; font-size: 0.74rem; cursor: pointer; }
 .reset3d:hover { filter: brightness(1.3); }
 .back-hub-home { align-self: center; }
 
+/* ---------------- Punkte-Rangliste (rechts, nur im Punktemodus) ---------------- */
+.score-panel {
+  flex: 0 0 210px; align-self: flex-start; max-height: 100%; overflow-y: auto;
+  background: rgba(29,16,21,0.88); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 12px 12px 10px; box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+}
+.score-panel h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); margin: 0 0 8px; }
+.score-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.score-row { display: grid; grid-template-columns: 22px 1fr auto; gap: 2px 8px; align-items: center; font-size: 0.85rem; }
+.score-row .rank { color: var(--text-dim); font-weight: 800; text-align: center; }
+.score-row.first .rank { color: var(--gold-bright); }
+.score-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.score-row.turn .nm { color: var(--gold-bright); }
+.score-row.me .nm { color: var(--accent-bright); }
+.score-row.out .nm { text-decoration: line-through; opacity: 0.5; }
+.score-row .pts { font-weight: 800; color: var(--gold-bright); }
+.score-row .bar { grid-column: 2 / 4; height: 5px; border-radius: 3px; background: var(--bg); overflow: hidden; }
+.score-row .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--gold)); }
+.score-goal { margin-top: 8px; font-size: 0.72rem; color: var(--text-dim); text-align: center; }
+
 @media (max-width: 720px) {
   :root { --hand-bar-height: 214px; }
   .game-header { padding: 8px 10px; }
   .lbl { display: none; }
-  .game-body { padding: 8px 6px calc(var(--hand-bar-height) + 8px); }
-  .table-wrap { aspect-ratio: 3 / 4; max-height: calc(100vh - 56px - var(--hand-bar-height) - 12px); }
-  .table-felt { inset: 22% 6%; }
+  .game-body { padding: 6px 4px calc(var(--hand-bar-height) + 6px); }
+  .score-panel { display: none; }
+  .table-felt { inset: 20% 5%; }
   .seat { width: 88px; }
   .seat-name-row { font-size: 0.66rem; padding: 2px 7px; }
   .seat-name-text { max-width: 54px; }
